@@ -3,9 +3,9 @@ package org.wilczewski.threads;
 import org.wilczewski.wash.CarWash;
 
 public class CarThread extends Thread {
-    int carId;
-    CarWash carWash;
-    boolean inQueue = false;
+    private int carId;
+    private CarWash carWash;
+    private boolean inQueue = false;
 
     public CarThread(int carId, CarWash carWash) {
         this.carId = carId;
@@ -18,9 +18,17 @@ public class CarThread extends Thread {
             while (!inQueue) {
                 addToQueue();
             }
+            synchronized (this){
+                this.wait();
+            }
+            System.out.println("wjechałem" + carId);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void wash() {
+        System.out.println("Washing " + carId);
     }
 
     private void addToQueue() throws InterruptedException {
@@ -54,5 +62,9 @@ public class CarThread extends Thread {
                 }
             }
         }
+    }
+
+    public int getCarId() {
+        return carId;
     }
 }

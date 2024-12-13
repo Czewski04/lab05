@@ -22,10 +22,11 @@ public class App {
             allCarsList.getLast().setPriority(10);
             allCarsList.getLast().start();
         }
-
     }
 
     public static void main(String[] args) throws InterruptedException {
         App app = new App();
     }
 }
+
+//przerobić remove na poll w CarWash, kolejki na private, setterem zwaracać wartość usuwanego elementu

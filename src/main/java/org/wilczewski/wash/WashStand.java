@@ -1,10 +1,13 @@
 package org.wilczewski.wash;
 
+import org.wilczewski.threads.CarThread;
+
 import java.util.ArrayList;
 
 public class WashStand {
     boolean available;
     ArrayList<Wash> washesList;
+    CarThread carThread;
 
     public  WashStand() {
         available = true;
@@ -27,5 +30,13 @@ public class WashStand {
 
     public void setWashesList(ArrayList<Wash> washesList) {
         this.washesList = washesList;
+    }
+
+    public CarThread getCarThread() {
+        return carThread;
+    }
+
+    public void setCarThread(CarThread carThread) {
+        this.carThread = carThread;
     }
 }
