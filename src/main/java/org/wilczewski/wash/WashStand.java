@@ -15,9 +15,11 @@ public class WashStand {
         return available;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
+    public void setAvailable() {
+        this.available = true;
     }
+
+    public void setUnavailable() {this.available = false;}
 
     public ArrayList<Wash> getWashesList() {
         return washesList;
