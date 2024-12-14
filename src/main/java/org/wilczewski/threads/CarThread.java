@@ -17,18 +17,30 @@ public class CarThread extends Thread {
     @Override
     public void run() {
         try {
-            while (!inQueue) {
-                addToQueue();
+            while(true) {
+                while (!inQueue) {
+                    addToQueue();
+                }
+                synchronized (this) {
+                    this.wait();
+                }
+                System.out.println("wjechałem " + carId);
+                wash();
+                returnToStreet();
+                Thread.sleep(5000);
             }
-            synchronized (this){
-                this.wait();
-            }
-            System.out.println("wjechałem " + carId);
-            wash();
-
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void returnToStreet() {
+        synchronized (washStand) {
+            washStand.setCarThread(null);
+            washStand.setAvailable();
+            washStand.notify();
+        }
+        this.inQueue = false;
     }
 
     private void wash() throws InterruptedException {
