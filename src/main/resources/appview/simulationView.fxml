@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="668.0" prefWidth="1032.0" style="-fx-background-color: #3d3d3b;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.wilczewski.gui.SimulationViewController">
+   <children>
+      <TableView fx:id="standTable" layoutX="32.0" layoutY="405.0" prefHeight="236.0" prefWidth="956.0" style="-fx-background-color: #696865;">
+         <columns>
+            <TableColumn fx:id="standColumn" prefWidth="137.60003662109375" text="Stand" />
+            <TableColumn fx:id="carIdColumn" prefWidth="216.0001220703125" text="Car ID" />
+            <TableColumn fx:id="water1Column" prefWidth="163.9998779296875" text="water" />
+            <TableColumn fx:id="soap1Column" prefWidth="156.800048828125" text="soap" />
+            <TableColumn fx:id="water2Column" prefWidth="132.7999267578125" text="water" />
+            <TableColumn fx:id="soap2Column" prefWidth="148.8001708984375" text="soap" />
+         </columns>
+      </TableView>
+      <TableView fx:id="q1Table" layoutX="159.0" layoutY="60.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #696865;">
+        <columns>
+          <TableColumn fx:id="q1Column" prefWidth="199.20001220703125" text="Q1" />
+        </columns>
+      </TableView>
+      <TableView fx:id="q2Table" layoutX="674.0" layoutY="60.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #696865;">
+        <columns>
+          <TableColumn fx:id="q2Column" prefWidth="199.199951171875" text="Q2" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

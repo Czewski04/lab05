@@ -8,10 +8,12 @@ public class WashStand {
     private boolean available;
     private ArrayList<Wash> washesList;
     private CarThread carThread;
+    private int washStandId;
 
-    public  WashStand() {
+    public  WashStand(int washId) {
         available = true;
         washesList = new ArrayList<>();
+        this.washStandId = washId;
     }
 
     public boolean isAvailable() {
@@ -28,15 +30,11 @@ public class WashStand {
         return washesList;
     }
 
-    public void setWashesList(ArrayList<Wash> washesList) {
-        this.washesList = washesList;
-    }
-
-    public CarThread getCarThread() {
-        return carThread;
-    }
-
     public void setCarThread(CarThread carThread) {
         this.carThread = carThread;
+    }
+
+    public int getWashStandId() {
+        return washStandId;
     }
 }

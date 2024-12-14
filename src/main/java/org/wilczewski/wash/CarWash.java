@@ -7,17 +7,19 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class CarWash {
-    ArrayList<WashStand> washStandsList;
-    Queue<CarThread> queue1;
-    Queue<CarThread> queue2;
-    int queue1Size = 3;
-    int queue2Size = 3;
-    int washStands = 4;
+    private ArrayList<WashStand> washStandsList;
+    private Queue<CarThread> queue1;
+    private Queue<CarThread> queue2;
+    private int queue1Size;
+    private int queue2Size;
 
-    public CarWash() {
+    public CarWash(int washStands, int queue1Size, int queue2Size) {
+        this.queue1Size = queue1Size;
+        this.queue2Size = queue2Size;
+
         washStandsList = new ArrayList<>();
         for(int i = 0; i < washStands; i++){
-            washStandsList.add(new WashStand());
+            washStandsList.add(new WashStand(i));
             if(i==0){
                 washStandsList.getLast().getWashesList().add(new Wash("water"));
                 washStandsList.getLast().getWashesList().add(new Wash("soap"));
@@ -47,20 +49,12 @@ public class CarWash {
         return washStandsList;
     }
 
-    public void setWashStandsList(ArrayList<WashStand> washStandsList) {
-        this.washStandsList = washStandsList;
-    }
-
     public Queue<CarThread> getQueue1() {
         return queue1;
     }
 
     public void addToQueue1(CarThread car) {
         this.queue1.add(car);
-    }
-
-    public void removeFromQueue1() {
-        this.queue1.remove();
     }
 
     public Queue<CarThread> getQueue2() {
@@ -71,24 +65,11 @@ public class CarWash {
         this.queue2.add(car);
     }
 
-    public void removeFromQueue2() {
-        this.queue2.remove();
-    }
-
     public int getQueue1Size() {
         return queue1Size;
-    }
-
-    public void setQueue1Size(int queue1Size) {
-        this.queue1Size = queue1Size;
     }
 
     public int getQueue2Size() {
         return queue2Size;
     }
-
-    public void setQueue2Size(int queue2Size) {
-        this.queue2Size = queue2Size;
-    }
-
 }

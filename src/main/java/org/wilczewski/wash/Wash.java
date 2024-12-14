@@ -20,12 +20,4 @@ public class Wash {
     public void setUnavailable() {
         this.available = false;
     }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }

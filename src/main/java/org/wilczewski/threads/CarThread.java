@@ -1,5 +1,7 @@
 package org.wilczewski.threads;
 
+import javafx.application.Platform;
+import org.wilczewski.gui.SimulationViewController;
 import org.wilczewski.wash.CarWash;
 import org.wilczewski.wash.WashStand;
 
@@ -8,10 +10,12 @@ public class CarThread extends Thread {
     private final CarWash carWash;
     private boolean inQueue = false;
     private WashStand washStand;
+    private final SimulationViewController simulationViewController;
 
-    public CarThread(int carId, CarWash carWash) {
+    public CarThread(int carId, CarWash carWash, SimulationViewController simulationViewController) {
         this.carId = carId;
         this.carWash = carWash;
+        this.simulationViewController = simulationViewController;
     }
 
     @Override
@@ -24,7 +28,6 @@ public class CarThread extends Thread {
                 synchronized (this) {
                     this.wait();
                 }
-                System.out.println("wjechałem " + carId);
                 wash();
                 returnToStreet();
                 Thread.sleep(5000);
@@ -38,6 +41,7 @@ public class CarThread extends Thread {
         synchronized (washStand) {
             washStand.setCarThread(null);
             washStand.setAvailable();
+            Platform.runLater(() -> simulationViewController.leavedStand(this.getCarId(), washStand.getWashStandId()));
             washStand.notify();
         }
         this.inQueue = false;
@@ -56,14 +60,26 @@ public class CarThread extends Thread {
             for(int i=0; i<washStand.getWashesList().size(); i+=2) {
                 synchronized (washStand.getWashesList().get(i)) {
                     if(washStand.getWashesList().get(i).isAvailable()){
-                        synchronized (washStand.getWashesList().get(i)) {
-                            washStand.getWashesList().get(i).setUnavailable();
-                            System.out.println("starting water" + carId);
-                            Thread.sleep(2000);
-                            System.out.println("ending water" + carId);
-                            washStand.getWashesList().get(i).setAvailable();
-                            return;
+                        washStand.getWashesList().get(i).setUnavailable();
+                        if(i==2)
+                            Platform.runLater(() -> simulationViewController.washedStageStart(this.carId, this.washStand.getWashStandId(), "water"+2));
+                        else {
+                            if (this.washStand.getWashStandId() == 0)
+                                Platform.runLater(() -> simulationViewController.washedStageStart(this.carId, this.washStand.getWashStandId(), "water" + 2));
+                            else
+                                Platform.runLater(() -> simulationViewController.washedStageStart(this.carId, this.washStand.getWashStandId(), "water" + 1));
                         }
+                        Thread.sleep(2000);
+                        if(i==2)
+                            Platform.runLater(() -> simulationViewController.washedStageEnd(this.carId, this.washStand.getWashStandId(), "water"+2));
+                        else {
+                            if (this.washStand.getWashStandId() == 0)
+                                Platform.runLater(() -> simulationViewController.washedStageEnd(this.carId, this.washStand.getWashStandId(), "water" + 2));
+                            else
+                                Platform.runLater(() -> simulationViewController.washedStageEnd(this.carId, this.washStand.getWashStandId(), "water" + 1));
+                        }
+                        washStand.getWashesList().get(i).setAvailable();
+                        return;
                     }
                 }
             }
@@ -75,14 +91,26 @@ public class CarThread extends Thread {
             for(int i=1; i<washStand.getWashesList().size(); i+=2) {
                 synchronized (washStand.getWashesList().get(i)) {
                     if(washStand.getWashesList().get(i).isAvailable()){
-                        synchronized (washStand.getWashesList().get(i)) {
-                            washStand.getWashesList().get(i).setUnavailable();
-                            System.out.println("starting soap" + carId);
-                            Thread.sleep(2000);
-                            System.out.println("ending soap" + carId);
-                            washStand.getWashesList().get(i).setAvailable();
-                            return;
+                        washStand.getWashesList().get(i).setUnavailable();
+                        if(i==3)
+                            Platform.runLater(() -> simulationViewController.washedStageStart(this.carId, this.washStand.getWashStandId(), "soap"+2));
+                        else {
+                            if (this.washStand.getWashStandId() == 0)
+                                Platform.runLater(() -> simulationViewController.washedStageStart(this.carId, this.washStand.getWashStandId(), "soap" + 2));
+                            else
+                                Platform.runLater(() -> simulationViewController.washedStageStart(this.carId, this.washStand.getWashStandId(), "soap" + 1));
                         }
+                        Thread.sleep(2000);
+                        if(i==3)
+                            Platform.runLater(() -> simulationViewController.washedStageEnd(this.carId, this.washStand.getWashStandId(), "soap"+2));
+                        else {
+                            if (this.washStand.getWashStandId() == 0)
+                                Platform.runLater(() -> simulationViewController.washedStageEnd(this.carId, this.washStand.getWashStandId(), "soap" + 2));
+                            else
+                                Platform.runLater(() -> simulationViewController.washedStageEnd(this.carId, this.washStand.getWashStandId(), "soap" + 1));
+                        }
+                        washStand.getWashesList().get(i).setAvailable();
+                        return;
                     }
                 }
             }
@@ -104,7 +132,7 @@ public class CarThread extends Thread {
             synchronized (carWash.getQueue1()) {
                 if(carWash.getQueue1().size() < carWash.getQueue1Size()) {
                     carWash.addToQueue1(this);
-                    System.out.println("Car " + carId + " added to q1");
+                    Platform.runLater(() -> simulationViewController.joinedToQ1(this.getCarId()));
                     inQueue = true;
                     carWash.getQueue1().notifyAll();
                 }
@@ -114,7 +142,7 @@ public class CarThread extends Thread {
             synchronized (carWash.getQueue2()) {
                 if(carWash.getQueue2().size() < carWash.getQueue2Size()) {
                     carWash.addToQueue2(this);
-                    System.out.println("Car" + carId + "added to q2");
+                    Platform.runLater(() -> simulationViewController.joinedToQ2(this.getCarId()));
                     inQueue = true;
                     carWash.getQueue2().notifyAll();
                 }

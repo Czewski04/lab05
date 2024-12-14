@@ -1,5 +1,7 @@
 package org.wilczewski.threads;
 
+import javafx.application.Platform;
+import org.wilczewski.gui.SimulationViewController;
 import org.wilczewski.wash.CarWash;
 import org.wilczewski.wash.WashStand;
 
@@ -7,10 +9,12 @@ import org.wilczewski.wash.WashStand;
 public class ControllerThread extends Thread {
     private final CarWash carWash;
     private boolean lastUsedQ1;
+    private final SimulationViewController simulationViewController;
 
-    public ControllerThread(CarWash carWash) {
+    public ControllerThread(CarWash carWash, SimulationViewController controller) {
         this.carWash = carWash;
         this.lastUsedQ1 = false;
+        this.simulationViewController = controller;
     }
 
     @Override
@@ -31,17 +35,17 @@ public class ControllerThread extends Thread {
                 synchronized (washStand) {
                     if (washStand.isAvailable()) {
                         if (lastUsedQ1) {
-                            car = redirectFromQ2();
+                            car = redirectFromQ2(washStand);
                             lastUsedQ1 = false;
                             if (car == null) {
-                                car = redirectFromQ1();
+                                car = redirectFromQ1(washStand);
                                 lastUsedQ1 = true;
                             }
                         } else {
-                            car = redirectFromQ1();
+                            car = redirectFromQ1(washStand);
                             lastUsedQ1 = true;
                             if (car == null) {
-                                car = redirectFromQ2();
+                                car = redirectFromQ2(washStand);
                                 lastUsedQ1 = false;
                             }
                         }
@@ -59,25 +63,27 @@ public class ControllerThread extends Thread {
         }
     }
 
-    private CarThread redirectFromQ1() throws InterruptedException {
+    private CarThread redirectFromQ1(WashStand washStand) throws InterruptedException {
         CarThread car = null;
         synchronized (carWash.getQueue1()) {
             if(!carWash.getQueue1().isEmpty()) {
                 car = carWash.getQueue1().poll();
                 carWash.getQueue1().notifyAll();
-                System.out.println("car " + car.getCarId() +" deleted from q1");
+                CarThread finalCar = car;
+                Platform.runLater(() -> simulationViewController.enteredToStand(finalCar.getCarId(), washStand.getWashStandId(), 1));
             }
         }
         return car;
     }
 
-    private CarThread redirectFromQ2() throws InterruptedException {
+    private CarThread redirectFromQ2(WashStand washStand) throws InterruptedException {
         CarThread car = null;
         synchronized (carWash.getQueue2()) {
             if(!carWash.getQueue2().isEmpty()) {
                 car = carWash.getQueue2().poll();
                 carWash.getQueue2().notifyAll();
-                System.out.println("car " + car.getCarId() + " deleted from q2");
+                CarThread finalCar = car;
+                Platform.runLater(() -> simulationViewController.enteredToStand(finalCar.getCarId(), washStand.getWashStandId(), 2));
             }
         }
         return car;
