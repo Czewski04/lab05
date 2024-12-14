@@ -5,9 +5,9 @@ import org.wilczewski.threads.CarThread;
 import java.util.ArrayList;
 
 public class WashStand {
-    boolean available;
-    ArrayList<Wash> washesList;
-    CarThread carThread;
+    private boolean available;
+    private ArrayList<Wash> washesList;
+    private CarThread carThread;
 
     public  WashStand() {
         available = true;

@@ -1,8 +1,8 @@
 package org.wilczewski.wash;
 
 public class Wash {
-    boolean available;
-    String type;
+    private boolean available;
+    private String type;
 
     public Wash(String type) {
         available = true;
@@ -13,8 +13,12 @@ public class Wash {
         return available;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
+    public void setAvailable() {
+        this.available = true;
+    }
+
+    public void setUnavailable() {
+        this.available = false;
     }
 
     public String getType() {

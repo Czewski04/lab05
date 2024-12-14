@@ -28,28 +28,30 @@ public class ControllerThread extends Thread {
         CarThread car = null;
         synchronized (carWash.getWashStandsList()) {
             for(WashStand washStand : carWash.getWashStandsList()) {
-                if(washStand.isAvailable()){
-                    if(lastUsedQ1){
-                        car = redirectFromQ2();
-                        lastUsedQ1 = false;
-                        if(car == null){
-                            car = redirectFromQ1();
-                            lastUsedQ1 = true;
-                        }
-                    }
-                    else {
-                        car = redirectFromQ1();
-                        lastUsedQ1 = true;
-                        if(car == null){
+                synchronized (washStand) {
+                    if (washStand.isAvailable()) {
+                        if (lastUsedQ1) {
                             car = redirectFromQ2();
                             lastUsedQ1 = false;
+                            if (car == null) {
+                                car = redirectFromQ1();
+                                lastUsedQ1 = true;
+                            }
+                        } else {
+                            car = redirectFromQ1();
+                            lastUsedQ1 = true;
+                            if (car == null) {
+                                car = redirectFromQ2();
+                                lastUsedQ1 = false;
+                            }
                         }
-                    }
-                    if(car != null){
-                        synchronized (car) {
-                            washStand.setCarThread(car);
-                            washStand.setUnavailable();
-                            car.notify();
+                        if (car != null) {
+                            synchronized (car) {
+                                washStand.setCarThread(car);
+                                washStand.setUnavailable();
+                                car.setWashStand(washStand);
+                                car.notify();
+                            }
                         }
                     }
                 }
