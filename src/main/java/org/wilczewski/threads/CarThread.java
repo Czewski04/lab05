@@ -5,6 +5,8 @@ import org.wilczewski.gui.SimulationViewController;
 import org.wilczewski.wash.CarWash;
 import org.wilczewski.wash.WashStand;
 
+import java.util.Random;
+
 public class CarThread extends Thread {
     private final int carId;
     private final CarWash carWash;
@@ -69,7 +71,9 @@ public class CarThread extends Thread {
                             else
                                 Platform.runLater(() -> simulationViewController.washedStageStart(this.carId, this.washStand.getWashStandId(), "water" + 1));
                         }
-                        Thread.sleep(2000);
+                        Random random = new Random();
+                        int randomInt = random.nextInt(2000 - 500 + 1) + 500;
+                        Thread.sleep(2000+randomInt);
                         if(i==2)
                             Platform.runLater(() -> simulationViewController.washedStageEnd(this.carId, this.washStand.getWashStandId(), "water"+2));
                         else {
@@ -100,7 +104,9 @@ public class CarThread extends Thread {
                             else
                                 Platform.runLater(() -> simulationViewController.washedStageStart(this.carId, this.washStand.getWashStandId(), "soap" + 1));
                         }
-                        Thread.sleep(2000);
+                        Random random = new Random();
+                        int randomInt = random.nextInt(2000 - 500 + 1) + 500;
+                        Thread.sleep(2000+randomInt);
                         if(i==3)
                             Platform.runLater(() -> simulationViewController.washedStageEnd(this.carId, this.washStand.getWashStandId(), "soap"+2));
                         else {
