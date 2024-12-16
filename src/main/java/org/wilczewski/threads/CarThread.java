@@ -44,7 +44,7 @@ public class CarThread extends Thread {
             washStand.setCarThread(null);
             washStand.setAvailable();
             Platform.runLater(() -> simulationViewController.leavedStand(this.getCarId(), washStand.getWashStandId()));
-            washStand.notify();
+            washStand.notifyAll();
         }
         this.inQueue = false;
     }

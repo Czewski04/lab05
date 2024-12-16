@@ -32,6 +32,7 @@ public class ControllerThread extends Thread {
         CarThread car = null;
         synchronized (carWash.getWashStandsList()) {
             for(WashStand washStand : carWash.getWashStandsList()) {
+                Thread.sleep(200);
                 synchronized (washStand) {
                     if (washStand.isAvailable()) {
                         if (lastUsedQ1) {
