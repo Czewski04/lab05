@@ -13,11 +13,13 @@ public class CarThread extends Thread {
     private boolean inQueue = false;
     private WashStand washStand;
     private final SimulationViewController simulationViewController;
+    private final ControllerThread controllerThread;
 
-    public CarThread(int carId, CarWash carWash, SimulationViewController simulationViewController) {
+    public CarThread(int carId, CarWash carWash, SimulationViewController simulationViewController, ControllerThread controllerThread) {
         this.carId = carId;
         this.carWash = carWash;
         this.simulationViewController = simulationViewController;
+        this.controllerThread = controllerThread;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class CarThread extends Thread {
                     this.wait();
                 }
                 wash();
-                returnToStreet();
+                //returnToStreet();
                 Thread.sleep(5000);
             }
         } catch (InterruptedException e) {
@@ -45,6 +47,9 @@ public class CarThread extends Thread {
             washStand.setAvailable();
             Platform.runLater(() -> simulationViewController.leavedStand(this.getCarId(), washStand.getWashStandId()));
             washStand.notifyAll();
+            synchronized (controllerThread) {
+                controllerThread.notifyAll();
+            }
         }
         this.inQueue = false;
     }
@@ -54,7 +59,11 @@ public class CarThread extends Thread {
             washStage1And3();
             washStage2();
             washStage1And3();
+            System.out.println("umyłem");
         }
+
+        returnToStreet();
+        System.out.println("i wyjechałem");
     }
 
     private void washStage1And3() throws InterruptedException {

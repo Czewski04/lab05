@@ -68,7 +68,7 @@ public class App extends Application {
         allCarsList = new ArrayList<>();
 
         for (int i = 0; i < numberOfCars; i++) {
-            CarThread carThread = new CarThread(i, carWash, controller);
+            CarThread carThread = new CarThread(i, carWash, controller, controllerThread);
             allCarsList.add(carThread);
             carThread.start();
         }

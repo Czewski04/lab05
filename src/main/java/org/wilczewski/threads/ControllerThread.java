@@ -22,6 +22,9 @@ public class ControllerThread extends Thread {
         while (true) {
             try {
                 redirectToWashStand();
+                synchronized (this) {
+                    wait();
+                }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -32,7 +35,6 @@ public class ControllerThread extends Thread {
         CarThread car = null;
         synchronized (carWash.getWashStandsList()) {
             for(WashStand washStand : carWash.getWashStandsList()) {
-                Thread.sleep(200);
                 synchronized (washStand) {
                     if (washStand.isAvailable()) {
                         if (lastUsedQ1) {
@@ -56,6 +58,7 @@ public class ControllerThread extends Thread {
                                 washStand.setUnavailable();
                                 car.setWashStand(washStand);
                                 car.notify();
+                                System.out.println("na stanowisku");
                             }
                         }
                     }
@@ -72,6 +75,7 @@ public class ControllerThread extends Thread {
                 carWash.getQueue1().notifyAll();
                 CarThread finalCar = car;
                 Platform.runLater(() -> simulationViewController.enteredToStand(finalCar.getCarId(), washStand.getWashStandId(), 1));
+                System.out.println("też na stanowisku");
             }
         }
         return car;
@@ -85,6 +89,7 @@ public class ControllerThread extends Thread {
                 carWash.getQueue2().notifyAll();
                 CarThread finalCar = car;
                 Platform.runLater(() -> simulationViewController.enteredToStand(finalCar.getCarId(), washStand.getWashStandId(), 2));
+                System.out.println("też na stanowisku");
             }
         }
         return car;
